@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Book.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library Management System</a> &gt; <a href="index.source.html" class="el_package">com.library.model</a> &gt; <span class="el_source">Book.java</span></div><h1>Book.java</h1><pre class="source lang-java linenums">package com.library.model;
+
+import java.time.LocalDate;
+import java.util.Objects;
+
+/**
+ * Represents a book in the library system
+ */
+public class Book {
+    private String isbn;
+    private String title;
+    private String author;
+    private String category;
+    private boolean isAvailable;
+    private LocalDate publicationDate;
+    private int borrowCount;
+
+    // Constructor
+<span class="fc" id="L19">    public Book(String isbn, String title, String author, String category, LocalDate publicationDate) {</span>
+<span class="fc" id="L20">        this.isbn = isbn;</span>
+<span class="fc" id="L21">        this.title = title;</span>
+<span class="fc" id="L22">        this.author = author;</span>
+<span class="fc" id="L23">        this.category = category;</span>
+<span class="fc" id="L24">        this.publicationDate = publicationDate;</span>
+<span class="fc" id="L25">        this.isAvailable = true;</span>
+<span class="fc" id="L26">        this.borrowCount = 0;</span>
+<span class="fc" id="L27">    }</span>
+
+    // Getters and Setters
+    public String getIsbn() {
+<span class="fc" id="L31">        return isbn;</span>
+    }
+
+    public void setIsbn(String isbn) {
+<span class="nc" id="L35">        this.isbn = isbn;</span>
+<span class="nc" id="L36">    }</span>
+
+    public String getTitle() {
+<span class="fc" id="L39">        return title;</span>
+    }
+
+    public void setTitle(String title) {
+<span class="fc" id="L43">        this.title = title;</span>
+<span class="fc" id="L44">    }</span>
+
+    public String getAuthor() {
+<span class="fc" id="L47">        return author;</span>
+    }
+
+    public void setAuthor(String author) {
+<span class="fc" id="L51">        this.author = author;</span>
+<span class="fc" id="L52">    }</span>
+
+    public String getCategory() {
+<span class="fc" id="L55">        return category;</span>
+    }
+
+    public void setCategory(String category) {
+<span class="nc" id="L59">        this.category = category;</span>
+<span class="nc" id="L60">    }</span>
+
+    public boolean isAvailable() {
+<span class="fc" id="L63">        return isAvailable;</span>
+    }
+
+    public void setAvailable(boolean available) {
+<span class="fc" id="L67">        isAvailable = available;</span>
+<span class="fc" id="L68">    }</span>
+
+    public LocalDate getPublicationDate() {
+<span class="nc" id="L71">        return publicationDate;</span>
+    }
+
+    public void setPublicationDate(LocalDate publicationDate) {
+<span class="nc" id="L75">        this.publicationDate = publicationDate;</span>
+<span class="nc" id="L76">    }</span>
+
+    public int getBorrowCount() {
+<span class="fc" id="L79">        return borrowCount;</span>
+    }
+
+    public void incrementBorrowCount() {
+<span class="fc" id="L83">        this.borrowCount++;</span>
+<span class="fc" id="L84">    }</span>
+
+    @Override
+    public boolean equals(Object o) {
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (this == o) return true;</span>
+<span class="pc bpc" id="L89" title="2 of 4 branches missed.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="fc" id="L90">        Book book = (Book) o;</span>
+<span class="fc" id="L91">        return Objects.equals(isbn, book.isbn);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L96">        return Objects.hash(isbn);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L101">        return String.format(&quot;Book{isbn='%s', title='%s', author='%s', category='%s', available=%s, borrowCount=%d}&quot;,</span>
+<span class="fc" id="L102">                isbn, title, author, category, isAvailable, borrowCount);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

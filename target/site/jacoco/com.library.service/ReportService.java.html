@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReportService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library Management System</a> &gt; <a href="index.source.html" class="el_package">com.library.service</a> &gt; <span class="el_source">ReportService.java</span></div><h1>ReportService.java</h1><pre class="source lang-java linenums">package com.library.service;
+
+import com.library.model.Book;
+import com.library.model.Member;
+import com.library.model.Transaction;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+ * Service class for generating library reports
+ */
+public class ReportService {
+    private LibraryService libraryService;
+
+<span class="nc" id="L17">    public ReportService(LibraryService libraryService) {</span>
+<span class="nc" id="L18">        this.libraryService = libraryService;</span>
+<span class="nc" id="L19">    }</span>
+
+    /**
+     * Generate report of most popular books (by borrow count)
+     */
+    public void generatePopularBooksReport() {
+<span class="nc" id="L25">        System.out.println(&quot;\n=== POPULAR BOOKS REPORT ===&quot;);</span>
+<span class="nc" id="L26">        System.out.println(&quot;Books sorted by borrow count:&quot;);</span>
+        
+<span class="nc" id="L28">        List&lt;Book&gt; popularBooks = libraryService.getBooks().values().stream()</span>
+<span class="nc" id="L29">                .sorted((b1, b2) -&gt; Integer.compare(b2.getBorrowCount(), b1.getBorrowCount()))</span>
+<span class="nc" id="L30">                .limit(10) // Top 10</span>
+<span class="nc" id="L31">                .collect(Collectors.toList());</span>
+
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        if (popularBooks.isEmpty()) {</span>
+<span class="nc" id="L34">            System.out.println(&quot;No books have been borrowed yet.&quot;);</span>
+<span class="nc" id="L35">            return;</span>
+        }
+
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        for (int i = 0; i &lt; popularBooks.size(); i++) {</span>
+<span class="nc" id="L39">            Book book = popularBooks.get(i);</span>
+<span class="nc" id="L40">            System.out.printf(&quot;%d. %s by %s (Borrowed %d times)%n&quot;, </span>
+<span class="nc" id="L41">                    i + 1, book.getTitle(), book.getAuthor(), book.getBorrowCount());</span>
+        }
+<span class="nc" id="L43">    }</span>
+
+    /**
+     * Generate report of overdue books
+     */
+    public void generateOverdueBooksReport() {
+<span class="nc" id="L49">        System.out.println(&quot;\n=== OVERDUE BOOKS REPORT ===&quot;);</span>
+        
+<span class="nc" id="L51">        List&lt;Transaction&gt; overdueTransactions = libraryService.getOverdueBooks();</span>
+        
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (overdueTransactions.isEmpty()) {</span>
+<span class="nc" id="L54">            System.out.println(&quot;No overdue books found.&quot;);</span>
+<span class="nc" id="L55">            return;</span>
+        }
+
+<span class="nc" id="L58">        System.out.println(&quot;Books that are overdue:&quot;);</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        for (Transaction transaction : overdueTransactions) {</span>
+<span class="nc" id="L60">            Book book = libraryService.getBooks().get(transaction.getIsbn());</span>
+<span class="nc" id="L61">            Member member = libraryService.getMembers().get(transaction.getMemberId());</span>
+            
+<span class="nc" id="L63">            System.out.printf(&quot;- %s by %s%n&quot;, book.getTitle(), book.getAuthor());</span>
+<span class="nc" id="L64">            System.out.printf(&quot;  Borrowed by: %s (ID: %s)%n&quot;, member.getName(), member.getMemberId());</span>
+<span class="nc" id="L65">            System.out.printf(&quot;  Due date: %s (%d days overdue)%n&quot;, </span>
+<span class="nc" id="L66">                    transaction.getDueDate(), transaction.getDaysOverdue());</span>
+<span class="nc" id="L67">            System.out.println();</span>
+<span class="nc" id="L68">        }</span>
+<span class="nc" id="L69">    }</span>
+
+    /**
+     * Generate library statistics report
+     */
+    public void generateLibraryStatsReport() {
+<span class="nc" id="L75">        System.out.println(&quot;\n=== LIBRARY STATISTICS ===&quot;);</span>
+        
+<span class="nc" id="L77">        Map&lt;String, Book&gt; books = libraryService.getBooks();</span>
+<span class="nc" id="L78">        Map&lt;String, Member&gt; members = libraryService.getMembers();</span>
+<span class="nc" id="L79">        List&lt;Transaction&gt; transactions = libraryService.getTransactions();</span>
+        
+<span class="nc" id="L81">        long availableBooks = books.values().stream().filter(Book::isAvailable).count();</span>
+<span class="nc" id="L82">        long borrowedBooks = books.size() - availableBooks;</span>
+        
+<span class="nc" id="L84">        int totalBorrowedByMembers = members.values().stream()</span>
+<span class="nc" id="L85">                .mapToInt(Member::getBorrowedBooksCount)</span>
+<span class="nc" id="L86">                .sum();</span>
+        
+<span class="nc" id="L88">        long borrowTransactions = transactions.stream()</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">                .filter(t -&gt; t.getType() == Transaction.TransactionType.BORROW)</span>
+<span class="nc" id="L90">                .count();</span>
+        
+<span class="nc" id="L92">        long returnTransactions = transactions.stream()</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">                .filter(t -&gt; t.getType() == Transaction.TransactionType.RETURN)</span>
+<span class="nc" id="L94">                .count();</span>
+        
+<span class="nc" id="L96">        System.out.println(&quot;Total books in library: &quot; + books.size());</span>
+<span class="nc" id="L97">        System.out.println(&quot;Available books: &quot; + availableBooks);</span>
+<span class="nc" id="L98">        System.out.println(&quot;Currently borrowed books: &quot; + borrowedBooks);</span>
+<span class="nc" id="L99">        System.out.println(&quot;Total members: &quot; + members.size());</span>
+<span class="nc" id="L100">        System.out.println(&quot;Total borrow transactions: &quot; + borrowTransactions);</span>
+<span class="nc" id="L101">        System.out.println(&quot;Total return transactions: &quot; + returnTransactions);</span>
+<span class="nc" id="L102">        System.out.println(&quot;Books currently with members: &quot; + totalBorrowedByMembers);</span>
+<span class="nc" id="L103">    }</span>
+
+    /**
+     * Generate member activity report
+     */
+    public void generateMemberActivityReport() {
+<span class="nc" id="L109">        System.out.println(&quot;\n=== MEMBER ACTIVITY REPORT ===&quot;);</span>
+        
+<span class="nc" id="L111">        Map&lt;String, Member&gt; members = libraryService.getMembers();</span>
+        
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (members.isEmpty()) {</span>
+<span class="nc" id="L114">            System.out.println(&quot;No members found.&quot;);</span>
+<span class="nc" id="L115">            return;</span>
+        }
+
+<span class="nc" id="L118">        System.out.println(&quot;Member borrowing activity:&quot;);</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        for (Member member : members.values()) {</span>
+<span class="nc" id="L120">            System.out.printf(&quot;- %s (ID: %s)%n&quot;, member.getName(), member.getMemberId());</span>
+<span class="nc" id="L121">            System.out.printf(&quot;  Currently borrowed: %d/%d books%n&quot;, </span>
+<span class="nc" id="L122">                    member.getBorrowedBooksCount(), member.getMaxBooksAllowed());</span>
+            
+<span class="nc bnc" id="L124" title="All 2 branches missed.">            if (member.getBorrowedBooksCount() &gt; 0) {</span>
+<span class="nc" id="L125">                System.out.print(&quot;  Books: &quot;);</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">                for (String isbn : member.getBorrowedBooks()) {</span>
+<span class="nc" id="L127">                    Book book = libraryService.getBooks().get(isbn);</span>
+<span class="nc" id="L128">                    System.out.print(book.getTitle() + &quot; &quot;);</span>
+<span class="nc" id="L129">                }</span>
+<span class="nc" id="L130">                System.out.println();</span>
+            }
+<span class="nc" id="L132">            System.out.println();</span>
+<span class="nc" id="L133">        }</span>
+<span class="nc" id="L134">    }</span>
+
+    /**
+     * Generate books by category report
+     */
+    public void generateBooksByCategoryReport() {
+<span class="nc" id="L140">        System.out.println(&quot;\n=== BOOKS BY CATEGORY REPORT ===&quot;);</span>
+        
+<span class="nc" id="L142">        Map&lt;String, List&lt;Book&gt;&gt; booksByCategory = libraryService.getBooks().values().stream()</span>
+<span class="nc" id="L143">                .collect(Collectors.groupingBy(Book::getCategory));</span>
+        
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        for (Map.Entry&lt;String, List&lt;Book&gt;&gt; entry : booksByCategory.entrySet()) {</span>
+<span class="nc" id="L146">            System.out.println(&quot;\nCategory: &quot; + entry.getKey());</span>
+<span class="nc" id="L147">            System.out.println(&quot;Books count: &quot; + entry.getValue().size());</span>
+            
+<span class="nc bnc" id="L149" title="All 2 branches missed.">            for (Book book : entry.getValue()) {</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">                String status = book.isAvailable() ? &quot;Available&quot; : &quot;Borrowed&quot;;</span>
+<span class="nc" id="L151">                System.out.printf(&quot;  - %s by %s [%s]%n&quot;, </span>
+<span class="nc" id="L152">                        book.getTitle(), book.getAuthor(), status);</span>
+<span class="nc" id="L153">            }</span>
+<span class="nc" id="L154">        }</span>
+<span class="nc" id="L155">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
