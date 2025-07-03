@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LibraryApp.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Library Management System</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">LibraryApp.java</span></div><h1>LibraryApp.java</h1><pre class="source lang-java linenums">import java.util.Scanner;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
+public class LibraryApp {
+<span class="fc" id="L6">    private static final LibraryService LIBRARY_SERVICE = new LibraryService();</span>
+<span class="fc" id="L7">    private static Scanner scanner = new Scanner(System.in);</span>
+<span class="fc" id="L8">    private static boolean isTestMode = false;</span>
+<span class="fc" id="L9">    private static final Logger LOGGER = Logger.getLogger(LibraryApp.class.getName());</span>
+    
+    private LibraryApp() {
+        // Private constructor to hide implicit public one
+    }
+    
+    public static void main(String[] args) {
+<span class="fc" id="L16">        initializeData();</span>
+<span class="fc" id="L17">        showMenu();</span>
+<span class="fc" id="L18">    }</span>
+    
+    // Package-private method for testing
+    static void setScanner(Scanner newScanner) {
+<span class="fc" id="L22">        scanner = newScanner;</span>
+<span class="fc" id="L23">        isTestMode = true;</span>
+<span class="fc" id="L24">    }</span>
+    
+    private static void initializeData() {
+        // Add books
+<span class="fc" id="L28">        LIBRARY_SERVICE.addBook(new Book(&quot;B001&quot;, &quot;Java Programming&quot;, &quot;John Doe&quot;));</span>
+<span class="fc" id="L29">        LIBRARY_SERVICE.addBook(new Book(&quot;B002&quot;, &quot;Data Structures&quot;, &quot;Jane Smith&quot;));</span>
+<span class="fc" id="L30">        LIBRARY_SERVICE.addBook(new Book(&quot;B003&quot;, &quot;Spring Boot Guide&quot;, &quot;Michael Johnson&quot;));</span>
+<span class="fc" id="L31">        LIBRARY_SERVICE.addBook(new Book(&quot;B004&quot;, &quot;Database Design&quot;, &quot;Sarah Wilson&quot;));</span>
+<span class="fc" id="L32">        LIBRARY_SERVICE.addBook(new Book(&quot;B005&quot;, &quot;Web Development&quot;, &quot;David Brown&quot;));</span>
+<span class="fc" id="L33">        LIBRARY_SERVICE.addBook(new Book(&quot;B006&quot;, &quot;Python Basics&quot;, &quot;Emily Davis&quot;));</span>
+<span class="fc" id="L34">        LIBRARY_SERVICE.addBook(new Book(&quot;B007&quot;, &quot;Machine Learning&quot;, &quot;Robert Miller&quot;));</span>
+<span class="fc" id="L35">        LIBRARY_SERVICE.addBook(new Book(&quot;B008&quot;, &quot;Clean Code&quot;, &quot;Jennifer Garcia&quot;));</span>
+        
+        // Add members
+<span class="fc" id="L38">        LIBRARY_SERVICE.addMember(new Member(&quot;M001&quot;, &quot;Alice Johnson&quot;, &quot;alice@email.com&quot;));</span>
+<span class="fc" id="L39">        LIBRARY_SERVICE.addMember(new Member(&quot;M002&quot;, &quot;Bob Wilson&quot;, &quot;bob@email.com&quot;));</span>
+<span class="fc" id="L40">        LIBRARY_SERVICE.addMember(new Member(&quot;M003&quot;, &quot;Charlie Brown&quot;, &quot;charlie@email.com&quot;));</span>
+<span class="fc" id="L41">        LIBRARY_SERVICE.addMember(new Member(&quot;M004&quot;, &quot;Diana Smith&quot;, &quot;diana@email.com&quot;));</span>
+<span class="fc" id="L42">        LIBRARY_SERVICE.addMember(new Member(&quot;M005&quot;, &quot;Edward Davis&quot;, &quot;edward@email.com&quot;));</span>
+<span class="fc" id="L43">        LIBRARY_SERVICE.addMember(new Member(&quot;M006&quot;, &quot;Fiona Miller&quot;, &quot;fiona@email.com&quot;));</span>
+<span class="fc" id="L44">        LIBRARY_SERVICE.addMember(new Member(&quot;M007&quot;, &quot;George Wilson&quot;, &quot;george@email.com&quot;));</span>
+        
+        // Create some transactions
+<span class="fc" id="L47">        LIBRARY_SERVICE.borrowBook(&quot;B001&quot;, &quot;M001&quot;);</span>
+<span class="fc" id="L48">        LIBRARY_SERVICE.borrowBook(&quot;B003&quot;, &quot;M002&quot;);</span>
+<span class="fc" id="L49">        LIBRARY_SERVICE.borrowBook(&quot;B005&quot;, &quot;M003&quot;);</span>
+<span class="fc" id="L50">        LIBRARY_SERVICE.borrowBook(&quot;B007&quot;, &quot;M004&quot;);</span>
+<span class="fc" id="L51">        LIBRARY_SERVICE.returnBook(&quot;B001&quot;);</span>
+<span class="fc" id="L52">        LIBRARY_SERVICE.borrowBook(&quot;B002&quot;, &quot;M005&quot;);</span>
+<span class="fc" id="L53">        LIBRARY_SERVICE.borrowBook(&quot;B004&quot;, &quot;M006&quot;);</span>
+<span class="fc" id="L54">    }</span>
+    
+    private static void showMenu() {
+<span class="fc" id="L57">        boolean running = true;</span>
+        
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        while (running) {</span>
+<span class="fc" id="L60">            printMenuOptions();</span>
+            
+<span class="fc" id="L62">            int choice = getIntInput();</span>
+            
+<span class="fc bfc" id="L64" title="All 9 branches covered.">            switch (choice) {</span>
+                case 1:
+<span class="fc" id="L66">                    addBook();</span>
+<span class="fc" id="L67">                    break;</span>
+                case 2:
+<span class="fc" id="L69">                    addMember();</span>
+<span class="fc" id="L70">                    break;</span>
+                case 3:
+<span class="fc" id="L72">                    borrowBook();</span>
+<span class="fc" id="L73">                    break;</span>
+                case 4:
+<span class="fc" id="L75">                    returnBook();</span>
+<span class="fc" id="L76">                    break;</span>
+                case 5:
+<span class="fc" id="L78">                    viewAllBooks();</span>
+<span class="fc" id="L79">                    break;</span>
+                case 6:
+<span class="fc" id="L81">                    viewAllMembers();</span>
+<span class="fc" id="L82">                    break;</span>
+                case 7:
+<span class="fc" id="L84">                    viewAllTransactions();</span>
+<span class="fc" id="L85">                    break;</span>
+                case 8:
+<span class="fc" id="L87">                    running = false;</span>
+<span class="fc" id="L88">                    System.out.println(&quot;Goodbye!&quot;);</span>
+<span class="fc" id="L89">                    break;</span>
+                default:
+<span class="fc" id="L91">                    System.out.println(&quot;Invalid option. Please try again.&quot;);</span>
+            }
+<span class="fc" id="L93">        }</span>
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        if (isTestMode) {</span>
+<span class="fc" id="L95">            scanner.close();</span>
+        }
+<span class="fc" id="L97">    }</span>
+    
+    private static void printMenuOptions() {
+<span class="fc" id="L100">        System.out.println(&quot;\n=== Library Management System ===&quot;);</span>
+<span class="fc" id="L101">        System.out.println(&quot;1. Add Book&quot;);</span>
+<span class="fc" id="L102">        System.out.println(&quot;2. Add Member&quot;);</span>
+<span class="fc" id="L103">        System.out.println(&quot;3. Borrow Book&quot;);</span>
+<span class="fc" id="L104">        System.out.println(&quot;4. Return Book&quot;);</span>
+<span class="fc" id="L105">        System.out.println(&quot;5. View All Books&quot;);</span>
+<span class="fc" id="L106">        System.out.println(&quot;6. View All Members&quot;);</span>
+<span class="fc" id="L107">        System.out.println(&quot;7. View All Transactions&quot;);</span>
+<span class="fc" id="L108">        System.out.println(&quot;8. Exit&quot;);</span>
+<span class="fc" id="L109">        System.out.print(&quot;Choose an option: &quot;);</span>
+<span class="fc" id="L110">    }</span>
+    
+    private static void addBook() {
+<span class="fc" id="L113">        System.out.print(&quot;Enter Book ID: &quot;);</span>
+<span class="fc" id="L114">        String id = scanner.nextLine();</span>
+<span class="fc" id="L115">        System.out.print(&quot;Enter Book Title: &quot;);</span>
+<span class="fc" id="L116">        String title = scanner.nextLine();</span>
+<span class="fc" id="L117">        System.out.print(&quot;Enter Book Author: &quot;);</span>
+<span class="fc" id="L118">        String author = scanner.nextLine();</span>
+        
+<span class="fc" id="L120">        LIBRARY_SERVICE.addBook(new Book(id, title, author));</span>
+<span class="fc" id="L121">        System.out.println(&quot;Book added successfully!&quot;);</span>
+<span class="fc" id="L122">    }</span>
+    
+    private static void addMember() {
+<span class="fc" id="L125">        System.out.print(&quot;Enter Member ID: &quot;);</span>
+<span class="fc" id="L126">        String id = scanner.nextLine();</span>
+<span class="fc" id="L127">        System.out.print(&quot;Enter Member Name: &quot;);</span>
+<span class="fc" id="L128">        String name = scanner.nextLine();</span>
+<span class="fc" id="L129">        System.out.print(&quot;Enter Member Email: &quot;);</span>
+<span class="fc" id="L130">        String email = scanner.nextLine();</span>
+        
+<span class="fc" id="L132">        LIBRARY_SERVICE.addMember(new Member(id, name, email));</span>
+<span class="fc" id="L133">        System.out.println(&quot;Member added successfully!&quot;);</span>
+<span class="fc" id="L134">    }</span>
+    
+    private static void borrowBook() {
+<span class="fc" id="L137">        System.out.print(&quot;Enter Book ID: &quot;);</span>
+<span class="fc" id="L138">        String bookId = scanner.nextLine();</span>
+<span class="fc" id="L139">        System.out.print(&quot;Enter Member ID: &quot;);</span>
+<span class="fc" id="L140">        String memberId = scanner.nextLine();</span>
+        
+<span class="fc" id="L142">        boolean success = LIBRARY_SERVICE.borrowBook(bookId, memberId);</span>
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">        if (success) {</span>
+<span class="fc" id="L144">            System.out.println(&quot;Book borrowed successfully!&quot;);</span>
+        } else {
+<span class="nc" id="L146">            System.out.println(&quot;Failed to borrow book. Check if book exists and is available.&quot;);</span>
+        }
+<span class="fc" id="L148">    }</span>
+    
+    private static void returnBook() {
+<span class="fc" id="L151">        System.out.print(&quot;Enter Book ID: &quot;);</span>
+<span class="fc" id="L152">        String bookId = scanner.nextLine();</span>
+        
+<span class="fc" id="L154">        boolean success = LIBRARY_SERVICE.returnBook(bookId);</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">        if (success) {</span>
+<span class="fc" id="L156">            System.out.println(&quot;Book returned successfully!&quot;);</span>
+        } else {
+<span class="nc" id="L158">            System.out.println(&quot;Failed to return book. Check if book is currently borrowed.&quot;);</span>
+        }
+<span class="fc" id="L160">    }</span>
+    
+    private static void viewAllBooks() {
+<span class="fc" id="L163">        System.out.println(&quot;\n=== All Books ===&quot;);</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">        for (Book book : LIBRARY_SERVICE.getAllBooks()) {</span>
+<span class="fc" id="L165">            System.out.printf(&quot;%s - %s by %s (Available: %s)%n&quot;, </span>
+<span class="fc" id="L166">                book.getId(), book.getTitle(), book.getAuthor(), book.isAvailable());</span>
+<span class="fc" id="L167">        }</span>
+<span class="fc" id="L168">    }</span>
+    
+    private static void viewAllMembers() {
+<span class="fc" id="L171">        System.out.println(&quot;\n=== All Members ===&quot;);</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">        for (Member member : LIBRARY_SERVICE.getAllMembers()) {</span>
+<span class="fc" id="L173">            System.out.printf(&quot;%s - %s (%s)%n&quot;, </span>
+<span class="fc" id="L174">                member.getId(), member.getName(), member.getEmail());</span>
+<span class="fc" id="L175">        }</span>
+<span class="fc" id="L176">    }</span>
+    
+    private static void viewAllTransactions() {
+<span class="fc" id="L179">        System.out.println(&quot;\n=== All Transactions ===&quot;);</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">        for (Transaction transaction : LIBRARY_SERVICE.getAllTransactions()) {</span>
+<span class="fc" id="L181">            System.out.printf(&quot;%s - Book: %s, Member: %s, Borrowed: %s, Returned: %s%n&quot;,</span>
+<span class="fc" id="L182">                transaction.getId(), transaction.getBookId(), transaction.getMemberId(),</span>
+<span class="fc" id="L183">                transaction.getBorrowDate(), transaction.isReturned());</span>
+<span class="fc" id="L184">        }</span>
+<span class="fc" id="L185">    }</span>
+    
+    private static int getIntInput() {
+        try {
+<span class="fc" id="L189">            return Integer.parseInt(scanner.nextLine());</span>
+<span class="fc" id="L190">        } catch (NumberFormatException e) {</span>
+<span class="fc" id="L191">            LOGGER.log(Level.WARNING, &quot;Invalid number input&quot;, e);</span>
+<span class="fc" id="L192">            return -1;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
